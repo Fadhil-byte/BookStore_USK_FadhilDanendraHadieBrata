@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminUserController extends Controller
 {
+    // Tampilkan daftar seluruh pengguna yang terdaftar
     public function index(Request $request)
     {
         $query = User::withCount(['pesanan', 'keranjang']);
@@ -29,6 +30,7 @@ class AdminUserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    // Hapus akun pengguna jika tidak memiliki pesanan aktif
     public function destroy($id)
     {
         if (Auth::id() == $id) {

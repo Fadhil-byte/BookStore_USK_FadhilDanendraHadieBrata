@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
+    // Halaman landing page toko buku
     public function landing()
     {
         $bukuTerbaru = Buku::with('kategori')->orderBy('id', 'desc')->take(8)->get();
@@ -22,6 +23,7 @@ class PageController extends Controller
         return view('pages.landing', compact('bukuTerbaru', 'kategoris', 'totalBuku', 'totalUser'));
     }
 
+    // Halaman About Us dan ringkasan dashboard statistik
     public function about()
     {
         $totalBuku = Buku::count();
@@ -46,6 +48,7 @@ class PageController extends Controller
         return view('pages.about', compact('totalBuku', 'totalKategori', 'totalUser'));
     }
 
+    // Halaman formulir kontak admin
     public function contact()
     {
         if (Auth::user()->role === 'admin') {
@@ -60,6 +63,7 @@ class PageController extends Controller
         return view('pages.contact', compact('user', 'riwayatPesan'));
     }
 
+    // Simpan pesan pertanyaan dari user ke admin
     public function storeContact(Request $request)
     {
         if (Auth::user()->role === 'admin') {

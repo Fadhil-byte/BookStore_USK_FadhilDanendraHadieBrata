@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    // Tampilkan form login
     public function showLogin()
     {
         if (Auth::check()) {
@@ -21,6 +22,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // Proses login dan validasi kredensial user
     public function login(Request $request)
     {
         $email = trim($request->input('email', ''));
@@ -32,6 +34,7 @@ class AuthController extends Controller
 
         $throttleKey = 'login|' . Str::transliterate(Str::lower($email)) . '|' . $request->ip();
 
+        // Batasi percobaan login gagal maksimal 5 kali
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             return back()->with('error', 'Terlalu banyak percobaan login gagal. Demi keamanan, silakan coba lagi dalam ' . $seconds . ' detik.')->withInput();
@@ -39,6 +42,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
+        // Cek kecocokan password dengan hash database
         if (!$user || !Hash::check($password, $user->password)) {
             RateLimiter::hit($throttleKey, 60);
             return back()->with('error', 'Kombinasi Alamat Email dan Password yang Anda masukkan tidak valid!')->withInput();
@@ -52,6 +56,7 @@ class AuthController extends Controller
         return redirect()->route('pages.about')->with('success', 'Selamat datang kembali, ' . $user->nama . '!');
     }
 
+    // Tampilkan form pendaftaran user baru
     public function showRegister()
     {
         if (Auth::check()) {
@@ -61,10 +66,12 @@ class AuthController extends Controller
         return view('auth.regist');
     }
 
+    // Proses registrasi akun user baru
     public function register(Request $request)
     {
         $regThrottleKey = 'register|' . $request->ip();
 
+        // Batasi frekuensi pendaftaran akun
         if (RateLimiter::tooManyAttempts($regThrottleKey, 5)) {
             $seconds = RateLimiter::availableIn($regThrottleKey);
             return back()->with('error', 'Terlalu banyak percobaan pendaftaran dari perangkat Anda. Silakan coba lagi dalam ' . $seconds . ' detik.')->withInput();
@@ -94,6 +101,7 @@ class AuthController extends Controller
             'password.numbers' => 'Password harus memuat kombinasi angka.',
         ]);
 
+        // Simpan data user dengan role user
         $user = User::create([
             'nama' => $validated['nama'],
             'email' => $validated['email'],
@@ -104,6 +112,7 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan masuk menggunakan alamat email dan password Anda.');
     }
 
+    // Logout dan bersihkan session
     public function logout(Request $request)
     {
         Auth::logout();

@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 
 class PesananController extends Controller
 {
+    // Tampilkan halaman checkout pemesanan
     public function checkout()
     {
         $items = Keranjang::with('buku')->where('user_id', Auth::id())->get();
@@ -20,6 +21,7 @@ class PesananController extends Controller
             return redirect()->route('keranjang.index')->with('error', 'Keranjang Anda masih kosong. Silakan pilih buku terlebih dahulu.');
         }
 
+        // Cek stok buku sebelum lanjut checkout
         foreach ($items as $item) {
             if ($item->jumlah > $item->buku->stok) {
                 return redirect()->route('keranjang.index')->with('error', 'Stok buku "' . $item->buku->judul . '" tidak mencukupi (tersedia: ' . $item->buku->stok . ').');
@@ -35,13 +37,14 @@ class PesananController extends Controller
         return view('pesanan.checkout', compact('items', 'total', 'user'));
     }
 
+    // Proses pembuatan pesanan baru dari keranjang belanja
     public function storeCheckout(Request $request)
     {
         $validated = $request->validate([
             'nama_penerima' => 'required|string|max:100',
             'telepon' => 'required|string|max:30',
             'alamat_pengiriman' => 'required|string',
-            'metode_pembayaran' => 'required|string|in:Payment at Delivery,COD',
+            'metode_pembayaran' => 'required|string|in:Payment at Delivery',
             'catatan' => 'nullable|string',
         ]);
 
@@ -54,6 +57,7 @@ class PesananController extends Controller
         return DB::transaction(function () use ($validated, $items) {
             $totalHarga = 0;
 
+            // Validasi ulang ketersediaan stok
             foreach ($items as $item) {
                 if ($item->jumlah > $item->buku->stok) {
                     throw new \Exception('Stok untuk buku ' . $item->buku->judul . ' tidak mencukupi.');
@@ -61,6 +65,7 @@ class PesananController extends Controller
                 $totalHarga += ($item->jumlah * $item->buku->harga);
             }
 
+            // Generate kode transaksi pesanan unik
             $kode = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(5));
 
             $pesanan = Pesanan::create([
@@ -76,6 +81,7 @@ class PesananController extends Controller
                 'catatan' => $validated['catatan'] ?? null,
             ]);
 
+            // Simpan setiap item buku dan kurangi stoknya
             foreach ($items as $item) {
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
@@ -91,12 +97,14 @@ class PesananController extends Controller
                 }
             }
 
+            // Kosongkan keranjang setelah pesanan berhasil dibuat
             Keranjang::where('user_id', Auth::id())->delete();
 
             return redirect()->route('pesanan.detail', $pesanan->id)->with('success', 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran sebelum buku dikirim.');
         });
     }
 
+    // Tampilkan riwayat pesanan milik user
     public function riwayat()
     {
         $pesanans = Pesanan::with('detailPesanan.buku')
@@ -107,6 +115,7 @@ class PesananController extends Controller
         return view('pesanan.riwayat', compact('pesanans'));
     }
 
+    // Tampilkan detail pesanan
     public function detail($id)
     {
         $query = Pesanan::with(['detailPesanan.buku.kategori', 'user']);
@@ -120,6 +129,7 @@ class PesananController extends Controller
         return view('pesanan.detail', compact('pesanan'));
     }
 
+    // Upload bukti transfer pembayaran oleh pelanggan
     public function uploadBukti(Request $request, $id)
     {
         $pesanan = Pesanan::where('user_id', Auth::id())->findOrFail($id);
@@ -146,6 +156,7 @@ class PesananController extends Controller
         return back()->with('success', 'Bukti pembayaran berhasil diunggah! Status pesanan Anda saat ini Menunggu Konfirmasi dari Administrator.');
     }
 
+    // Batalkan pesanan dan kembalikan stok buku
     public function batalkan($id)
     {
         $pesanan = Pesanan::with('detailPesanan.buku')->where('user_id', Auth::id())->findOrFail($id);
@@ -173,6 +184,7 @@ class PesananController extends Controller
         return back()->with('success', 'Pesanan ' . $pesanan->kode_pesanan . ' berhasil dibatalkan.');
     }
 
+    // Tampilkan daftar seluruh pesanan untuk panel admin
     public function adminIndex(Request $request)
     {
         $query = Pesanan::with(['user', 'detailPesanan.buku']);
@@ -203,6 +215,7 @@ class PesananController extends Controller
         return view('admin.pesanan.index', compact('pesanans', 'pendingOrdersCount'));
     }
 
+    // Update status pesanan dan status bayar oleh admin
     public function adminUpdateStatus(Request $request, $id)
     {
         $pesanan = Pesanan::with('detailPesanan.buku')->findOrFail($id);

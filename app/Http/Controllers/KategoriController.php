@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    // Tampilkan daftar kategori buku
     public function index()
     {
         $kategoris = Kategori::withCount('buku')->orderBy('id', 'desc')->get();
         return view('admin.kategori.index', compact('kategoris'));
     }
 
+    // Simpan data kategori baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -25,6 +27,7 @@ class KategoriController extends Controller
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori baru berhasil ditambahkan!');
     }
 
+    // Perbarui data kategori
     public function update(Request $request, $id)
     {
         $kategori = Kategori::findOrFail($id);
@@ -39,6 +42,7 @@ class KategoriController extends Controller
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 
+    // Hapus kategori jika tidak memiliki relasi buku
     public function destroy($id)
     {
         $kategori = Kategori::withCount('buku')->findOrFail($id);

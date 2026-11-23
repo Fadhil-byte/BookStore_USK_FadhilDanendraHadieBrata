@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\File;
 
 class BukuController extends Controller
 {
+    // Tampilkan katalog buku beserta filter pencarian dan kategori
     public function index(Request $request)
     {
         $query = Buku::with('kategori');
 
+        // Filter berdasarkan kata kunci pencarian
         if ($request->filled('q')) {
             $keyword = trim($request->q);
             $query->where(function ($q) use ($keyword) {
@@ -22,10 +24,12 @@ class BukuController extends Controller
             });
         }
 
+        // Filter berdasarkan kategori yang dipilih
         if ($request->filled('kategori')) {
             $query->where('kategori_id', $request->kategori);
         }
 
+        // Pengurutan data (terbaru, termurah, termahal, abjad)
         if ($request->filled('sort')) {
             if ($request->sort === 'harga_asc') {
                 $query->orderBy('harga', 'asc');
@@ -46,6 +50,7 @@ class BukuController extends Controller
         return view('buku.index', compact('buku', 'kategoris'));
     }
 
+    // Tampilkan detail informasi satu buku
     public function show($id)
     {
         $buku = Buku::with('kategori')->findOrFail($id);
@@ -57,12 +62,14 @@ class BukuController extends Controller
         return view('buku.detail', compact('buku', 'terkait'));
     }
 
+    // Tampilkan formulir tambah buku baru (khusus admin)
     public function create()
     {
         $kategoris = Kategori::orderBy('nama_kategori')->get();
         return view('buku.create', compact('kategoris'));
     }
 
+    // Simpan data buku baru ke database
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -90,6 +97,7 @@ class BukuController extends Controller
             'gambar.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
+        // Upload file gambar cover buku jika ada
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -104,6 +112,7 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('success', 'Buku baru berhasil ditambahkan ke katalog!');
     }
 
+    // Tampilkan formulir edit data buku
     public function edit($id)
     {
         $buku = Buku::findOrFail($id);
@@ -111,6 +120,7 @@ class BukuController extends Controller
         return view('buku.edit', compact('buku', 'kategoris'));
     }
 
+    // Perbarui data buku di database
     public function update(Request $request, $id)
     {
         $buku = Buku::findOrFail($id);
@@ -140,6 +150,7 @@ class BukuController extends Controller
             'gambar.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
+        // Ganti gambar lama jika ada gambar baru yang diunggah
         if ($request->hasFile('gambar')) {
             if ($buku->gambar && File::exists(public_path($buku->gambar))) {
                 File::delete(public_path($buku->gambar));
@@ -158,10 +169,12 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('success', 'Data buku berhasil diperbarui!');
     }
 
+    // Hapus data buku dari katalog
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);
 
+        // Jangan hapus buku yang sudah memiliki transaksi
         if ($buku->detailPesanan()->exists()) {
             return back()->with('error', 'Buku "' . $buku->judul . '" tidak dapat dihapus karena sudah memiliki riwayat transaksi pemesanan. Anda dapat mengubah stoknya menjadi 0 agar tidak dapat dipesan lagi.');
         }

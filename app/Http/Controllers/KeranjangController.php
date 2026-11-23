@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class KeranjangController extends Controller
 {
+    // Tampilkan daftar buku di keranjang belanja
     public function index()
     {
         $items = Keranjang::with('buku.kategori')
@@ -22,10 +23,12 @@ class KeranjangController extends Controller
         return view('keranjang.index', compact('items', 'total'));
     }
 
+    // Tambah buku ke keranjang belanja
     public function add(Request $request, $bukuId)
     {
         $buku = Buku::findOrFail($bukuId);
 
+        // Cek ketersediaan stok buku
         if ($buku->stok <= 0) {
             return back()->with('error', 'Maaf, stok buku ini sedang habis.');
         }
@@ -36,6 +39,7 @@ class KeranjangController extends Controller
             ->where('buku_id', $bukuId)
             ->first();
 
+        // Jika buku sudah ada di keranjang, tambahkan jumlahnya
         if ($item) {
             $totalJumlah = $item->jumlah + $jumlah;
             if ($totalJumlah > $buku->stok) {
@@ -56,6 +60,7 @@ class KeranjangController extends Controller
         return redirect()->route('keranjang.index')->with('success', 'Buku "' . $buku->judul . '" berhasil dimasukkan ke keranjang!');
     }
 
+    // Perbarui jumlah buku di keranjang
     public function update(Request $request, $id)
     {
         $item = Keranjang::with('buku')->where('user_id', Auth::id())->findOrFail($id);
@@ -75,6 +80,7 @@ class KeranjangController extends Controller
         return back()->with('success', 'Jumlah buku berhasil diperbarui.');
     }
 
+    // Hapus item dari keranjang belanja
     public function remove($id)
     {
         $item = Keranjang::where('user_id', Auth::id())->findOrFail($id);

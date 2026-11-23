@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class AdminPesanController extends Controller
 {
+    // Tampilkan daftar pesan kontak masuk dari pelanggan
     public function index(Request $request)
     {
         $query = PesanKontak::with('user');
@@ -21,6 +22,7 @@ class AdminPesanController extends Controller
         return view('admin.pesan.index', compact('pesans', 'unreadCount'));
     }
 
+    // Buka detail pesan dan ubah status menjadi sudah dibaca
     public function show($id)
     {
         $pesan = PesanKontak::with('user')->findOrFail($id);
@@ -32,6 +34,7 @@ class AdminPesanController extends Controller
         return view('admin.pesan.show', compact('pesan'));
     }
 
+    // Kirim pesan balasan dari admin ke pelanggan
     public function balas(Request $request, $id)
     {
         $pesan = PesanKontak::findOrFail($id);
@@ -49,6 +52,7 @@ class AdminPesanController extends Controller
         return back()->with('success', 'Balasan berhasil dikirim kepada ' . $pesan->nama . '!');
     }
 
+    // Hapus pesan kontak dari sistem
     public function destroy($id)
     {
         $pesan = PesanKontak::findOrFail($id);

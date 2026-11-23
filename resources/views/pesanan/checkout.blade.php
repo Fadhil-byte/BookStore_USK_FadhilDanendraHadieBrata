@@ -39,19 +39,11 @@
                 <h3 style="font-size: 18px; font-weight: 700; margin: 28px 0 16px; border-top: 1px solid var(--border-color); padding-top: 20px;">2. Metode Pembayaran</h3>
 
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-                    <label class="payment-card-option" id="card_payment_delivery">
+                    <label class="payment-card-option active" id="card_payment_delivery">
                         <input type="radio" id="radio_payment_delivery" name="metode_pembayaran" value="Payment at Delivery" checked style="margin-top: 4px;">
                         <div>
                             <strong class="payment-option-title" style="display: block; font-size: 15px;">Payment at Delivery (Pembayaran sebelum buku dikirim)</strong>
                             <span style="font-size: 13px; color: var(--text-muted); display: block; margin-top: 2px;">Lakukan transfer pembayaran melalui rekening bank setelah pesanan dibuat, buku langsung dikirim setelah konfirmasi admin.</span>
-                        </div>
-                    </label>
-
-                    <label class="payment-card-option" id="card_cod">
-                        <input type="radio" id="radio_cod" name="metode_pembayaran" value="COD" style="margin-top: 4px;">
-                        <div>
-                            <strong class="payment-option-title" style="display: block; font-size: 15px;">Cash on Delivery (Bayar di Tempat)</strong>
-                            <span style="font-size: 13px; color: var(--text-muted); display: block; margin-top: 2px;">Pembayaran tunai kepada kurir saat buku sampai di alamat Anda.</span>
                         </div>
                     </label>
                 </div>
