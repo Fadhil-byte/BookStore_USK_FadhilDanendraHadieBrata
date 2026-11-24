@@ -18,9 +18,7 @@ Rancangan antarmuka visual sistem ini dapat diakses pada tautan Figma berikut:
 * **Katalog Buku:** Pencarian cepat berdasarkan judul buku, nama penulis, dan penerbit, serta filter kategori literatur dan pengurutan harga.
 * **Detail Buku:** Halaman rincian sinopsis buku, harga, status ketersediaan stok, dan formulir penambahan kuantitas ke keranjang.
 * **Keranjang Belanja:** Perhitungan total belanja otomatis, update kuantitas, dan validasi ketersediaan stok real-time.
-* **Checkout & Pemesanan:** Pilihan metode pembayaran fleksibel:
-  * **Payment at Delivery (PAD) / Transfer Bank** sebelum pengiriman dengan upload bukti bayar.
-  * **Cash on Delivery (COD)** bayar langsung saat kurir tiba di lokasi.
+* **Checkout & Pemesanan:** Payment at Delivery (PAD) / Transfer Bank sebelum pengiriman dengan upload bukti bayar
 * **Riwayat Pesanan:** Memantau status transaksi (Menunggu Konfirmasi, Diproses, Dikirim, Selesai, Dibatalkan), cetak struk/detail pesanan, upload bukti transfer, dan fitur pembatalan pesanan mandiri dengan pengembalian stok otomatis.
 * **Contact to Admin:** Formulir pengiriman pesan pertanyaan/bantuan langsung kepada pengelola toko beserta riwayat tanggapan balasan admin.
 
