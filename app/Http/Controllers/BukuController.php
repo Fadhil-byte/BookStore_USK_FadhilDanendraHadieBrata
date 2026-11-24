@@ -19,8 +19,8 @@ class BukuController extends Controller
             $keyword = trim($request->q);
             $query->where(function ($q) use ($keyword) {
                 $q->where('judul', 'like', "%{$keyword}%")
-                  ->orWhere('penulis', 'like', "%{$keyword}%")
-                  ->orWhere('penerbit', 'like', "%{$keyword}%");
+                    ->orWhere('penulis', 'like', "%{$keyword}%")
+                    ->orWhere('penerbit', 'like', "%{$keyword}%");
             });
         }
 
@@ -66,6 +66,7 @@ class BukuController extends Controller
     public function create()
     {
         $kategoris = Kategori::orderBy('nama_kategori')->get();
+
         return view('buku.create', compact('kategoris'));
     }
 
@@ -76,7 +77,7 @@ class BukuController extends Controller
             'judul' => 'required|string|max:150|unique:buku,judul',
             'penulis' => 'required|string|max:100',
             'penerbit' => 'required|string|max:100',
-            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'tahun' => 'required|integer|min:1900|max:'.(date('Y') + 1),
             'kategori_id' => 'required|exists:kategoris,id',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
@@ -100,9 +101,9 @@ class BukuController extends Controller
         // Upload file gambar cover buku jika ada
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/buku'), $filename);
-            $validated['gambar'] = 'uploads/buku/' . $filename;
+            $validated['gambar'] = 'uploads/buku/'.$filename;
         }
 
         $validated['status'] = $validated['stok'] > 0 ? 'Tersedia' : 'Habis';
@@ -117,6 +118,7 @@ class BukuController extends Controller
     {
         $buku = Buku::findOrFail($id);
         $kategoris = Kategori::orderBy('nama_kategori')->get();
+
         return view('buku.edit', compact('buku', 'kategoris'));
     }
 
@@ -126,10 +128,10 @@ class BukuController extends Controller
         $buku = Buku::findOrFail($id);
 
         $validated = $request->validate([
-            'judul' => 'required|string|max:150|unique:buku,judul,' . $buku->id,
+            'judul' => 'required|string|max:150|unique:buku,judul,'.$buku->id,
             'penulis' => 'required|string|max:100',
             'penerbit' => 'required|string|max:100',
-            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'tahun' => 'required|integer|min:1900|max:'.(date('Y') + 1),
             'kategori_id' => 'required|exists:kategoris,id',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
@@ -157,9 +159,9 @@ class BukuController extends Controller
             }
 
             $file = $request->file('gambar');
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/buku'), $filename);
-            $validated['gambar'] = 'uploads/buku/' . $filename;
+            $validated['gambar'] = 'uploads/buku/'.$filename;
         }
 
         $validated['status'] = $validated['stok'] > 0 ? 'Tersedia' : 'Habis';
@@ -176,7 +178,7 @@ class BukuController extends Controller
 
         // Jangan hapus buku yang sudah memiliki transaksi
         if ($buku->detailPesanan()->exists()) {
-            return back()->with('error', 'Buku "' . $buku->judul . '" tidak dapat dihapus karena sudah memiliki riwayat transaksi pemesanan. Anda dapat mengubah stoknya menjadi 0 agar tidak dapat dipesan lagi.');
+            return back()->with('error', 'Buku "'.$buku->judul.'" tidak dapat dihapus karena sudah memiliki riwayat transaksi pemesanan. Anda dapat mengubah stoknya menjadi 0 agar tidak dapat dipesan lagi.');
         }
 
         if ($buku->gambar && File::exists(public_path($buku->gambar))) {

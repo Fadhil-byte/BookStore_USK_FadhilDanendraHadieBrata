@@ -24,7 +24,7 @@ class PesananController extends Controller
         // Cek stok buku sebelum lanjut checkout
         foreach ($items as $item) {
             if ($item->jumlah > $item->buku->stok) {
-                return redirect()->route('keranjang.index')->with('error', 'Stok buku "' . $item->buku->judul . '" tidak mencukupi (tersedia: ' . $item->buku->stok . ').');
+                return redirect()->route('keranjang.index')->with('error', 'Stok buku "'.$item->buku->judul.'" tidak mencukupi (tersedia: '.$item->buku->stok.').');
             }
         }
 
@@ -60,13 +60,13 @@ class PesananController extends Controller
             // Validasi ulang ketersediaan stok
             foreach ($items as $item) {
                 if ($item->jumlah > $item->buku->stok) {
-                    throw new \Exception('Stok untuk buku ' . $item->buku->judul . ' tidak mencukupi.');
+                    throw new \Exception('Stok untuk buku '.$item->buku->judul.' tidak mencukupi.');
                 }
                 $totalHarga += ($item->jumlah * $item->buku->harga);
             }
 
             // Generate kode transaksi pesanan unik
-            $kode = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(5));
+            $kode = 'ORD-'.date('Ymd').'-'.strtoupper(Str::random(5));
 
             $pesanan = Pesanan::create([
                 'kode_pesanan' => $kode,
@@ -144,11 +144,11 @@ class PesananController extends Controller
 
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
-            $filename = 'bukti_' . $pesanan->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'bukti_'.$pesanan->id.'_'.time().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads/bukti'), $filename);
 
             $pesanan->update([
-                'bukti_pembayaran' => 'uploads/bukti/' . $filename,
+                'bukti_pembayaran' => 'uploads/bukti/'.$filename,
                 'status_pesanan' => 'Menunggu Konfirmasi',
             ]);
         }
@@ -181,7 +181,7 @@ class PesananController extends Controller
             ]);
         });
 
-        return back()->with('success', 'Pesanan ' . $pesanan->kode_pesanan . ' berhasil dibatalkan.');
+        return back()->with('success', 'Pesanan '.$pesanan->kode_pesanan.' berhasil dibatalkan.');
     }
 
     // Tampilkan daftar seluruh pesanan untuk panel admin
@@ -201,11 +201,11 @@ class PesananController extends Controller
             $keyword = trim($request->q);
             $query->where(function ($q) use ($keyword) {
                 $q->where('kode_pesanan', 'like', "%{$keyword}%")
-                  ->orWhere('nama_penerima', 'like', "%{$keyword}%")
-                  ->orWhereHas('user', function ($u) use ($keyword) {
-                      $u->where('nama', 'like', "%{$keyword}%")
-                        ->orWhere('email', 'like', "%{$keyword}%");
-                  });
+                    ->orWhere('nama_penerima', 'like', "%{$keyword}%")
+                    ->orWhereHas('user', function ($u) use ($keyword) {
+                        $u->where('nama', 'like', "%{$keyword}%")
+                            ->orWhere('email', 'like', "%{$keyword}%");
+                    });
             });
         }
 
@@ -253,7 +253,6 @@ class PesananController extends Controller
             $pesanan->update($validated);
         });
 
-        return back()->with('success', 'Status pesanan ' . $pesanan->kode_pesanan . ' berhasil diperbarui!');
+        return back()->with('success', 'Status pesanan '.$pesanan->kode_pesanan.' berhasil diperbarui!');
     }
 }
-

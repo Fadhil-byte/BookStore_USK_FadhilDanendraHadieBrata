@@ -49,7 +49,7 @@ class AdminPesanController extends Controller
             'status' => 'Sudah Dibaca',
         ]);
 
-        return back()->with('success', 'Balasan berhasil dikirim kepada ' . $pesan->nama . '!');
+        return back()->with('success', 'Balasan berhasil dikirim kepada '.$pesan->nama.'!');
     }
 
     // Hapus pesan kontak dari sistem

@@ -32,19 +32,21 @@ class AuthController extends Controller
             return back()->with('error', 'Silakan masukkan alamat email dan password!')->withInput();
         }
 
-        $throttleKey = 'login|' . Str::transliterate(Str::lower($email)) . '|' . $request->ip();
+        $throttleKey = 'login|'.Str::transliterate(Str::lower($email)).'|'.$request->ip();
 
         // Batasi percobaan login gagal maksimal 5 kali
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            return back()->with('error', 'Terlalu banyak percobaan login gagal. Demi keamanan, silakan coba lagi dalam ' . $seconds . ' detik.')->withInput();
+
+            return back()->with('error', 'Terlalu banyak percobaan login gagal. Demi keamanan, silakan coba lagi dalam '.$seconds.' detik.')->withInput();
         }
 
         $user = User::where('email', $email)->first();
 
         // Cek kecocokan password dengan hash database
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (! $user || ! Hash::check($password, $user->password)) {
             RateLimiter::hit($throttleKey, 60);
+
             return back()->with('error', 'Kombinasi Alamat Email dan Password yang Anda masukkan tidak valid!')->withInput();
         }
 
@@ -53,7 +55,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('pages.about')->with('success', 'Selamat datang kembali, ' . $user->nama . '!');
+        return redirect()->route('pages.about')->with('success', 'Selamat datang kembali, '.$user->nama.'!');
     }
 
     // Tampilkan form pendaftaran user baru
@@ -69,12 +71,13 @@ class AuthController extends Controller
     // Proses registrasi akun user baru
     public function register(Request $request)
     {
-        $regThrottleKey = 'register|' . $request->ip();
+        $regThrottleKey = 'register|'.$request->ip();
 
         // Batasi frekuensi pendaftaran akun
         if (RateLimiter::tooManyAttempts($regThrottleKey, 5)) {
             $seconds = RateLimiter::availableIn($regThrottleKey);
-            return back()->with('error', 'Terlalu banyak percobaan pendaftaran dari perangkat Anda. Silakan coba lagi dalam ' . $seconds . ' detik.')->withInput();
+
+            return back()->with('error', 'Terlalu banyak percobaan pendaftaran dari perangkat Anda. Silakan coba lagi dalam '.$seconds.' detik.')->withInput();
         }
 
         RateLimiter::hit($regThrottleKey, 300);

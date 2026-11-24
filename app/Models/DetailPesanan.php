@@ -29,4 +29,3 @@ class DetailPesanan extends Model
         return $this->belongsTo(Buku::class, 'buku_id');
     }
 }
-

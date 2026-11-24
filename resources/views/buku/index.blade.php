@@ -78,7 +78,6 @@
                     <div class="tokopedia-meta">{{ $item->kategori ? $item->kategori->nama_kategori : 'Umum' }} &bull; {{ $item->tahun }}</div>
 
                     <div class="tokopedia-footer">
-                        <span>Banda Aceh</span>
                         @if ($item->stok > 0)
                             <span class="tokopedia-badge-stock in">Sisa {{ $item->stok }}</span>
                         @else

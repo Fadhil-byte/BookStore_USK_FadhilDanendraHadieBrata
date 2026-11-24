@@ -43,12 +43,12 @@ class KeranjangController extends Controller
         if ($item) {
             $totalJumlah = $item->jumlah + $jumlah;
             if ($totalJumlah > $buku->stok) {
-                return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: ' . $buku->stok . ').');
+                return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: '.$buku->stok.').');
             }
             $item->update(['jumlah' => $totalJumlah]);
         } else {
             if ($jumlah > $buku->stok) {
-                return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: ' . $buku->stok . ').');
+                return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: '.$buku->stok.').');
             }
             Keranjang::create([
                 'user_id' => Auth::id(),
@@ -57,7 +57,7 @@ class KeranjangController extends Controller
             ]);
         }
 
-        return redirect()->route('keranjang.index')->with('success', 'Buku "' . $buku->judul . '" berhasil dimasukkan ke keranjang!');
+        return redirect()->route('keranjang.index')->with('success', 'Buku "'.$buku->judul.'" berhasil dimasukkan ke keranjang!');
     }
 
     // Perbarui jumlah buku di keranjang
@@ -68,11 +68,12 @@ class KeranjangController extends Controller
 
         if ($jumlah <= 0) {
             $item->delete();
+
             return back()->with('success', 'Item berhasil dihapus dari keranjang.');
         }
 
         if ($jumlah > $item->buku->stok) {
-            return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: ' . $item->buku->stok . ').');
+            return back()->with('error', 'Jumlah melebihi stok yang tersedia (sisa: '.$item->buku->stok.').');
         }
 
         $item->update(['jumlah' => $jumlah]);
@@ -89,4 +90,3 @@ class KeranjangController extends Controller
         return back()->with('success', 'Item berhasil dihapus dari keranjang.');
     }
 }
-

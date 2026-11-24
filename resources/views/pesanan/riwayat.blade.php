@@ -85,6 +85,7 @@
         </table>
     </div>
 
+
     <div style="margin-top: 24px; display: flex; justify-content: center;">
         {{ $pesanans->links() }}
     </div>

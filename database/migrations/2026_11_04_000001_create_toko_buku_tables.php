@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('kategoris')) {
+        if (! Schema::hasTable('kategoris')) {
             Schema::create('kategoris', function (Blueprint $table) {
                 $table->id();
                 $table->string('nama_kategori', 100)->unique();
@@ -18,24 +18,24 @@ return new class extends Migration
         }
 
         Schema::table('buku', function (Blueprint $table) {
-            if (!Schema::hasColumn('buku', 'kategori_id')) {
+            if (! Schema::hasColumn('buku', 'kategori_id')) {
                 $table->foreignId('kategori_id')->nullable()->after('id')->constrained('kategoris')->nullOnDelete();
             }
-            if (!Schema::hasColumn('buku', 'harga')) {
+            if (! Schema::hasColumn('buku', 'harga')) {
                 $table->decimal('harga', 12, 2)->default(50000)->after('tahun');
             }
-            if (!Schema::hasColumn('buku', 'stok')) {
+            if (! Schema::hasColumn('buku', 'stok')) {
                 $table->integer('stok')->default(10)->after('harga');
             }
-            if (!Schema::hasColumn('buku', 'deskripsi')) {
+            if (! Schema::hasColumn('buku', 'deskripsi')) {
                 $table->text('deskripsi')->nullable()->after('stok');
             }
-            if (!Schema::hasColumn('buku', 'gambar')) {
+            if (! Schema::hasColumn('buku', 'gambar')) {
                 $table->string('gambar', 255)->nullable()->after('deskripsi');
             }
         });
 
-        if (!Schema::hasTable('keranjangs')) {
+        if (! Schema::hasTable('keranjangs')) {
             Schema::create('keranjangs', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -45,7 +45,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('pesanans')) {
+        if (! Schema::hasTable('pesanans')) {
             Schema::create('pesanans', function (Blueprint $table) {
                 $table->id();
                 $table->string('kode_pesanan', 50)->unique();
@@ -63,7 +63,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('detail_pesanans')) {
+        if (! Schema::hasTable('detail_pesanans')) {
             Schema::create('detail_pesanans', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('pesanan_id')->constrained('pesanans')->cascadeOnDelete();
@@ -75,7 +75,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('pesan_kontaks')) {
+        if (! Schema::hasTable('pesan_kontaks')) {
             Schema::create('pesan_kontaks', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
@@ -118,4 +118,3 @@ return new class extends Migration
         Schema::dropIfExists('kategoris');
     }
 };
-

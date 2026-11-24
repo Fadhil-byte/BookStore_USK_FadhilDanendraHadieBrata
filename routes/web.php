@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/about', [PageController::class, 'about'])->name('pages.about');
     Route::get('/katalog', [BukuController::class, 'index'])->name('buku.index');
-    Route::get('/buku', fn() => redirect()->route('buku.index'));
+    Route::get('/buku', fn () => redirect()->route('buku.index'));
     Route::get('/buku/{id}', [BukuController::class, 'show'])->name('buku.show');
     Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');
     Route::post('/contact', [PageController::class, 'storeContact'])->name('pages.store_contact');

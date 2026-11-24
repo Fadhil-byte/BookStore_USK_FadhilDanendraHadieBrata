@@ -11,6 +11,7 @@ class KategoriController extends Controller
     public function index()
     {
         $kategoris = Kategori::withCount('buku')->orderBy('id', 'desc')->get();
+
         return view('admin.kategori.index', compact('kategoris'));
     }
 
@@ -33,7 +34,7 @@ class KategoriController extends Controller
         $kategori = Kategori::findOrFail($id);
 
         $validated = $request->validate([
-            'nama_kategori' => 'required|string|max:100|unique:kategoris,nama_kategori,' . $id,
+            'nama_kategori' => 'required|string|max:100|unique:kategoris,nama_kategori,'.$id,
             'deskripsi' => 'nullable|string|max:255',
         ]);
 
@@ -56,4 +57,3 @@ class KategoriController extends Controller
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }
-

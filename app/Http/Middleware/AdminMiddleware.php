@@ -13,7 +13,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Cek apakah user sudah login
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk mengakses sistem.');
         }
 
@@ -25,4 +25,3 @@ class AdminMiddleware
         return $next($request);
     }
 }
-

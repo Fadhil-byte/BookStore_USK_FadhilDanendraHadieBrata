@@ -17,7 +17,7 @@ class AdminUserController extends Controller
             $keyword = trim($request->q);
             $query->where(function ($q) use ($keyword) {
                 $q->where('nama', 'like', "%{$keyword}%")
-                  ->orWhere('email', 'like', "%{$keyword}%");
+                    ->orWhere('email', 'like', "%{$keyword}%");
             });
         }
 
@@ -40,7 +40,7 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
 
         if ($user->pesanan()->whereIn('status_pesanan', ['Menunggu Konfirmasi', 'Diproses', 'Dikirim'])->exists()) {
-            return back()->with('error', 'Pengguna "' . $user->nama . '" memiliki transaksi pesanan aktif yang sedang berjalan dan tidak dapat dihapus.');
+            return back()->with('error', 'Pengguna "'.$user->nama.'" memiliki transaksi pesanan aktif yang sedang berjalan dan tidak dapat dihapus.');
         }
 
         $user->delete();
@@ -48,4 +48,3 @@ class AdminUserController extends Controller
         return back()->with('success', 'User berhasil dihapus dari sistem.');
     }
 }
-

@@ -9,16 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'email')) {
+            if (! Schema::hasColumn('users', 'email')) {
                 $table->string('email', 100)->nullable()->unique()->after('nama');
             }
         });
 
         Schema::table('pesan_kontaks', function (Blueprint $table) {
-            if (!Schema::hasColumn('pesan_kontaks', 'balasan')) {
+            if (! Schema::hasColumn('pesan_kontaks', 'balasan')) {
                 $table->text('balasan')->nullable()->after('pesan');
             }
-            if (!Schema::hasColumn('pesan_kontaks', 'tanggal_balasan')) {
+            if (! Schema::hasColumn('pesan_kontaks', 'tanggal_balasan')) {
                 $table->timestamp('tanggal_balasan')->nullable()->after('balasan');
             }
         });
@@ -42,4 +42,3 @@ return new class extends Migration
         });
     }
 };
-
